@@ -1,0 +1,39 @@
+name: Matrix Build with Artifacts (beeda5a)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Matrix
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14, 16, 18] # 👈 3 variants for Node.js
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step Identifier required in the question
+      - name: matrix-beeda5a
+        run: echo "Building for Node.js version ${{ matrix.node-version }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Generate build artifact
+        run: |
+          echo "Build output for Node.js version ${{ matrix.node-version }}" > build-output-${{ matrix.node-version }}.txt
+          echo "Artifact generated successfully for version ${{ matrix.node-version }}"
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-beeda5a-v${{ matrix.node-version }}
+          path: build-output-${{ matrix.node-version }}.txt
